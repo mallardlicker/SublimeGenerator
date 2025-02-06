@@ -18,12 +18,10 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
+
 # ==================================================================================================
 #	Add each folder to project and let their CMakeLists generate separate code
 # ==================================================================================================
 
-# SublimeGenerator custom local library
-# add_subdirectory(SublimeGeneratorLib)
-
-# SublimeGenerator executable
+# Add SublimeGenerator executable directory
 add_subdirectory(SublimeGenerator)
