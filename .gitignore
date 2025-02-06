@@ -5,8 +5,8 @@
 build/
 
 # Ignore sublime-project file
-*.sublime-project
-*.sublime-workspace
+SublimeGenerator.sublime-project
+SublimeGenerator.sublime-workspace
 
 # Ignore generated executables
 sg
