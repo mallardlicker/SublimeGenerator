@@ -39,7 +39,7 @@ set(sgAppName_INCLUDE_DIRS
 #   Collect SGAPPNAME external library files
 # ==================================================================================================
 
-#   non-downloaded (FetchContent or find_package calls)
+#   non-downloaded (FetchContent calls)
 
 # GLFW (option 1)
 # FetchContent_Declare(glfw GIT_REPOSITORY https://github.com/glfw/glfw.git GIT_TAG master)
@@ -48,11 +48,12 @@ set(sgAppName_INCLUDE_DIRS
 # set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 # FetchContent_MakeAvailable(glfw)
 
-# GLFW (option 2)
-# find_package(glfw3 3.3 REQUIRED)
-
 
 #   downloaded (physical libraries)
+
+# call find_package for locally (user) installed packages like glfw or OpenGL
+# GLFW (option 2)
+# find_package(glfw3 3.3 REQUIRED)
 
 # add_subdirectory for anything containing a CMakeLists.txt file (option 1)
 # EnTT

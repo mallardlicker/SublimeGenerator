@@ -58,7 +58,7 @@ set(sgLibName_INCLUDE_DIRS
 #   Collect SGLIBNAME external library files
 # ==================================================================================================
 
-#   non-downloaded (FetchContent or find_package calls)
+#   non-downloaded (FetchContent calls)
 
 # GLFW (option 1)
 # FetchContent_Declare(glfw GIT_REPOSITORY https://github.com/glfw/glfw.git GIT_TAG master)
@@ -67,13 +67,14 @@ set(sgLibName_INCLUDE_DIRS
 # set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 # FetchContent_MakeAvailable(glfw)
 
+
+#   downloaded (physical libraries)
+
+# call find_package for locally (user) installed packages like glfw or OpenGL
 # WARNING: everything added using find_package MUST be added to the CMake/sgLibNameConfig.cmake.in
 #  file's find_dependency list
 # GLFW (option 2)
 # find_package(glfw3 3.3 REQUIRED)
-
-
-#   downloaded (physical libraries)
 
 # add_subdirectory for anything containing a CMakeLists.txt file (option 1)
 # EnTT

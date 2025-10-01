@@ -1,12 +1,10 @@
 # Ignore system files
 .DS_Store
+.vscode
 
-# Ignore build results
+# Ignore build results and project files
 build/
-
-# Ignore sublime-project file
-SublimeGenerator.sublime-project
-SublimeGenerator.sublime-workspace
+project/
 
 # Ignore generated executables
 sg

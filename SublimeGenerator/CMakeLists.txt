@@ -36,7 +36,7 @@ set(SublimeGenerator_INCLUDE_DIRS
 
 
 # ==================================================================================================
-#   Collect TESTPRJ external library files
+#   Collect SUBLIMEGENERATOR external library files
 # ==================================================================================================
 
 #   non-downloaded (FetchContent or find_package calls)
@@ -50,27 +50,27 @@ FetchContent_MakeAvailable(CppUtils)
 
 # add_subdirectory for anything containing a CMakeLists.txt file (option 1)
 # EnTT
-# add_subdirectory(${TESTPRJ_SOURCE_DIR}/libraries/entt/)
+# add_subdirectory(${SUBLIMEGENERATOR_SOURCE_DIR}/libraries/entt/)
 
 # all cpp files (not included via CMakeLists.txt, option 2a)
-file(GLOB TESTPRJ_LIB_SOURCE_FILES LIST_DIRECTORIES false
+file(GLOB SUBLIMEGENERATOR_LIB_SOURCE_FILES LIST_DIRECTORIES false
     
     # note that this is not recursive, and will only add files/directories specified eg:
-    # ${TESTPRJ_SOURCE_DIR}/libraries/imgui/*.cpp
-    # ${TESTPRJ_SOURCE_DIR}/libraries/imgui/backends/imgui_impl_glfw.cpp
-    # ${TESTPRJ_SOURCE_DIR}/libraries/imgui/backends/imgui_impl_opengl3.cpp
+    # ${SUBLIMEGENERATOR_SOURCE_DIR}/libraries/imgui/*.cpp
+    # ${SUBLIMEGENERATOR_SOURCE_DIR}/libraries/imgui/backends/imgui_impl_glfw.cpp
+    # ${SUBLIMEGENERATOR_SOURCE_DIR}/libraries/imgui/backends/imgui_impl_opengl3.cpp
 )
 
 # all header files (not included via CMakeLists.txt, option 2b)
-file(GLOB_RECURSE TESTPRJ_LIB_HEADER_FILES
+file(GLOB_RECURSE SUBLIMEGENERATOR_LIB_HEADER_FILES
     
     # eg:
-    # ${TESTPRJ_SOURCE_DIR}/libraries/imgui/*.h
+    # ${SUBLIMEGENERATOR_SOURCE_DIR}/libraries/imgui/*.h
 )
 
 
 # define links and frameworks for the above as libs
-set(TestPrj_LINKED_LIBS 
+set(SublimeGenerator_LINKED_LIBS
     CppUtils
 )
 
@@ -85,5 +85,6 @@ add_executable(sg
                ${SUBLIMEGENERATOR_LIB_SOURCE_FILES}
                ${SUBLIMEGENERATOR_LIB_HEADER_FILES})
 
-target_include_directories(sg PRIVATE ${TestPrj_INCLUDE_DIRS})
-target_link_libraries(sg PRIVATE ${TestPrj_LINKED_LIBS})
+
+target_include_directories(sg PRIVATE ${SublimeGenerator_INCLUDE_DIRS})
+target_link_libraries(sg PRIVATE ${SublimeGenerator_LINKED_LIBS})
