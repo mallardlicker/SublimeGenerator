@@ -109,19 +109,31 @@ target_compile_definitions(pg PRIVATE
 #   Install configuration for Release builds
 # ==================================================================================================
 
-# Install the executable to /usr/local/bin (or user-specified location)
-install(TARGETS pg
-		RUNTIME DESTINATION bin
-		COMPONENT pg_only
-		EXCLUDE_FROM_ALL)
-
-# Create a custom target to install only pg
-add_custom_target(install_pg
-    COMMAND ${CMAKE_COMMAND} --install ${CMAKE_BINARY_DIR} --component pg_only
-    DEPENDS pg
-    COMMENT "Installing pg executable only")
-
 # Set default install prefix to /usr/local if not specified
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
 	set(CMAKE_INSTALL_PREFIX "/usr/local" CACHE PATH "Install prefix" FORCE)
 endif()
+
+# Install the executable to /usr/local/bin
+install(TARGETS pg
+		RUNTIME DESTINATION bin
+		COMPONENT pg_only
+		EXCLUDE_FROM_ALL)
+		
+# Install to workspace directory (uses different prefix)
+install(TARGETS pg
+		RUNTIME DESTINATION .
+		COMPONENT pg_workspace
+		EXCLUDE_FROM_ALL)
+
+# Create a custom target to install only pg to system location
+add_custom_target(install_pg_system
+    COMMAND ${CMAKE_COMMAND} --install ${CMAKE_BINARY_DIR} --component pg_only
+    DEPENDS pg
+    COMMENT "Installing pg executable to system bin")
+
+# Create a custom target to install pg to workspace directory
+add_custom_target(install_pg_workspace
+	COMMAND ${CMAKE_COMMAND} --install ${CMAKE_BINARY_DIR} --component pg_workspace --prefix ${CMAKE_SOURCE_DIR}
+	DEPENDS pg
+	COMMENT "Installing pg executable to workspace directory")

@@ -1,0 +1,12 @@
+# Ignore system files
+.DS_Store
+
+# Ignore build results
+build/
+
+# Ignore sublime-project file
+*.sublime-project
+*.sublime-workspace
+
+# Ignore generated executables
+pgAppOrStl

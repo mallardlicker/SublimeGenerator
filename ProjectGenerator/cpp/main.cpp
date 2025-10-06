@@ -1,7 +1,7 @@
 // main.cpp
 // Author: Justin Bunting
 // Created: 2024/08/06
-// Last Modified: 2025/10/05 23:13
+// Last Modified: 2025/10/06 13:53
 
 #include <string>
 #include <sstream>
@@ -33,6 +33,8 @@ static std::string TITLE = "Project Generator";
 // TODO: add MacOS Application types: 
 // 1. implement new Enums/datastructures/generation and terms DONE
 // 2. actually modify CMakeList.txt's and add the two new types
+//		--> the Application types will need a basic GLFW Window setup, and some form of debug text output?
+//		--> should everything utilize CppUtils' text outputting? This would ensure that debug text is properly handled
 
 // TODO: implement generation of Windows .exe's in application generation (edit CMakeLists.txt's)
 
@@ -44,9 +46,7 @@ int main(int argc, char* argv[]) {
 	
 	// Initialize variables
 	Project p, oldP;
-	
-	// std::filesystem::path baseDir = File::getUserDirectory();
-	// std::filesystem::path assetsDir = "/Users/mallardlicker/scripts/C++/SublimeProjects/SublimeGenerator/assets";
+	std::filesystem::path assetsDir = "/Users/mallardlicker/scripts/C++/Projects/ProjectGenerator/ProjectGenerator/assets";
 	
 	std::string inputText = "$$";
 	int inputNum;
@@ -342,7 +342,6 @@ int main(int argc, char* argv[]) {
 	
 	// start with project folder
 	std::filesystem::path projectDir = p.directory / p.projectFolder;
-	std::filesystem::path assetsDir = "/Users/mallardlicker/scripts/C++/SublimeProjects/ProjectGenerator/ProjectGenerator/assets";
 	assetsDir = assetsDir / ProjectInfo::pTypeToStr(p.type, true);
 	CppUtils::File::createDirIfNotExists(projectDir);
 	

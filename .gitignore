@@ -5,6 +5,7 @@
 # Ignore build results and project files
 build/
 project/
+old/
 
 # Ignore generated executables
-sg
+pg

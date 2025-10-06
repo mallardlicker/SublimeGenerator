@@ -2,7 +2,7 @@
 // -> Project struct, enum (PType), and ProjectInfo namespace/function definitions
 // Author: Justin Bunting
 // Created: 2025/10/01
-// Last Modified: 2025/10/05 21:44
+// Last Modified: 2025/10/06 11:58
 
 #ifndef _PROJECT_H
 #define _PROJECT_H
@@ -18,22 +18,23 @@
 #include <nlohmann/json.hpp>
 using json = nlohmann::json;
 
-// ! MacOS/Generator Application types:
-// -	Basic is an excecutable (-b)
-// - 	Library is just an includable library generator (-l)
-// - 	Standalone is an executable with libraries (-s)
-// - 	Application is an (MacOS) app with libraries (-a)
-// - 	StandaloneEngine is an executable that can use libraries containing a custom library (-se)
-// - 	ApplicationEngine is an (MaxOS) app that can use libraries containing a custom library (-ae)
-
-//		Project Type		Executable?		cpp+incl in base dir?	Application?	Gens Library?	Uses Ext Libs?	Uses Custom (Int) Lib?
-//								
-//		Basic				Yes				Yes						No				No				No				No
-//		Library				No				No						No				Yes				Yes				No
-//		Standalone			Yes				No						No				No				Yes				No
-//		Application			No				No						Yes				No				Yes				No
-//		StandaloneEngine	Yes				No						No				Yes				Yes				Yes
-//		ApplicationEngine	No				No						Yes				Yes				Yes				Yes
+// Project features: 
+// 		(a) cpp/include folders in dedicated app/exe/lib folder
+// 		(b) generates standalone executable
+// 		(c) generates application
+// 		(d) generates library
+// 		(e) generates engine (private library used by exe/app)
+// 		(f) can use external libraries
+//		(g) command-line argument used to modify type
+//
+// Project type				(a)		(b)		(c)		(d)		(e)		(f)		(g)
+// -----------------------------------------------------------------------------
+// Basic					No 		Yes		No 		No 		No 		No 		-b		-> DONE
+// Library					Yes		No 		No 		Yes		No 		Yes		-l		-> DONE
+// Standalone				Yes		Yes		No 		No 		No 		Yes		-s		-> DONE
+// Application				Yes		No 		Yes		No 		No 		Yes		-a
+// Standalone & Engine		Yes		Yes		No 		No 		Yes		Yes		-se		-> DONE
+// Application & Engine		Yes		No 		Yes		No 		Yes		Yes		-ae		-> WRONG
 
 enum PType {
 	Basic = 0,
