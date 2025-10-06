@@ -1,7 +1,7 @@
 // main.cpp
 // Author: Justin Bunting
 // Created: 2024/08/06
-// Last Modified: 2025/10/01 11:59
+// Last Modified: 2025/10/05 23:13
 
 #include <string>
 #include <sstream>
@@ -29,21 +29,12 @@
 
 
 // static int TEXTWIDTH = 100;
-static std::string TITLE = "Sublime Project Generator"; 
-// TODO: port to be just a "project generator":
-// 1. add project/.prjgen file which stores all the generation/project data
-// 2. allow for selection of editor using project/ProjectName.(workspace)
-//		-> add support for .sublime-workspace, .code-workspace (VSCode), and possibly more if other editors are used
+static std::string TITLE = "Project Generator"; 
+// TODO: add MacOS Application types: 
+// 1. implement new Enums/datastructures/generation and terms DONE
+// 2. actually modify CMakeList.txt's and add the two new types
 
-// TODO: add MacOS Application types: (In-Progress)
-// ! MacOS Application types:
-// -	Basic is an excecutable (-b)
-// - 	Library is just an includable library generator (-l)
-// - 	Standalone is an executable with libraries (-s)
-// - 	Application is an (MacOS) app with libraries (-a)
-// - 	StandaloneEngine is an executable that can use libraries containing a custom library (-se)
-// - 	ApplicationEngine is an (MaxOS) app that can use libraries containing a custom library (-ae)
-
+// TODO: implement generation of Windows .exe's in application generation (edit CMakeLists.txt's)
 
 int main(int argc, char* argv[]) {
 	
@@ -68,29 +59,32 @@ int main(int argc, char* argv[]) {
 	
 	// ! Command line args
 	// Either load project name and type from command line arguments, or prompt user for name
+	bool doPrompt = true;
 	if (argc > 0) {
 		
 		for (int i = 0; i < argc; i++) {
 			
 			std::string arg = argv[i];
 			
-			if (arg == "sg") {
+			if (arg.find("pg") != std::string::npos) {
 				continue;
 			}
 			
 			if (arg.find('-') != std::string::npos) {
 				
 				// Type argument
-				p.type = ProjectInfo::strToPType(arg); // TODO: test if working
+				std::cout << ProjectInfo::strToPType(arg) << std::endl;
+				p.type = ProjectInfo::strToPType(arg);
 			}
 			else {
 				
 				// Name argument
 				p.name = arg;
+				doPrompt = false;
 			}
 		}
 	}
-	else {
+	if (doPrompt) {
 		
 		// Prompt user for new project name
 		while (find_if(inputText.begin(), inputText.end(), TextFormatter::isNotAlnumSpace) != inputText.end()) {
@@ -106,12 +100,16 @@ int main(int argc, char* argv[]) {
 	
 	// ! Project editing input
 	// determine whether a project already exists under that name, and load if so
-	if (std::filesystem::exists(p.name + ".sublime-project") || std::filesystem::exists(p.name + "/" + p.name + ".sublime-project")) {
+	// important to remember that the only information we currently have would be the project name/type, meaning 
+	//  only Name.prjGen, project/Name.prjGen, and Name/Project/Name.prjGen are the only "findable" locations of
+	//  a prjGen file.
+	std::filesystem::path prjGenFile = 	std::filesystem::exists(p.name + ".prjGen") ? p.name + ".prjGen" :
+										std::filesystem::exists(std::string("project") + "/" + p.name + ".prjGen") ? std::string("project") + "/" + p.name + ".prjGen" :
+										std::filesystem::exists(p.name + "/" + "project" + "/" + p.name + ".prjGen") ? p.name + "/" + "project" + "/" + p.name + ".prjGen" :
+										"ThisFileDoesNotExist.pants";
+	if (std::filesystem::exists(prjGenFile)) {
 		
-		std::filesystem::path sublPrjFile = std::filesystem::exists(p.name + ".sublime-project") ? p.name + ".sublime-project" :
-																					p.name + "/" + p.name + ".sublime-project";
-		
-		ProjectInfo::importProjectInfo(p, sublPrjFile);
+		ProjectInfo::importProjectInfo(p, prjGenFile);
 		
 		if (p.isGenerated) {
 			
@@ -125,6 +123,7 @@ int main(int argc, char* argv[]) {
 	}
 	
 	
+	
 	while (true) {
 		
 		
@@ -136,7 +135,7 @@ int main(int argc, char* argv[]) {
 			// invalid response message
 			if (!isValid) {
 				
-				std::cout << "\n\tInvalid input: " << inputText << std::endl;
+				std::cout << "\n\tPrevious input invalid: " << inputText << std::endl;
 			}
 			
 			// input prompt
@@ -146,12 +145,12 @@ int main(int argc, char* argv[]) {
 			std::cin >> std::setw(1) >> inputText >> std::setw(0);
 			
 			// validate input
-			inputNum = int(inputText[0]) - int('0');
+			inputNum = int(inputText[0]) - int('0'); // has to be 0 and not EditParam::Build (to avoid triple-casting)
 			currentParam = inputNum;
 			isValid = true;
 			editingParam = true;
 			
-			if (inputNum == 0) {
+			if (inputNum == EditParam::Build) {
 				if (std::filesystem::exists(p.directory / p.name)) {
 					
 					std::cout << "\n\t\tProject folder already exists! Type 'OVERRIDE' to edit that project.\n\t\t\t-> ";
@@ -168,9 +167,9 @@ int main(int argc, char* argv[]) {
 					break;
 				}
 			}
-			else if ( (inputNum == 6 && (p.type == PType::Basic || p.type == PType::Library)) || 
-			     (inputNum == 7 && (p.type == PType::Basic || p.type == PType::Standalone)) || 
-			     inputNum > 7 || inputNum < 0) {
+			else if ( (inputNum == EditParam::AppFolder && (p.type == PType::Basic || p.type == PType::Library)) || 
+			     (inputNum == EditParam::LibFolder && (p.type == PType::Basic || p.type == PType::Standalone)) || 
+			     inputNum > EditParam::LibFolder || inputNum < 0) {
 				
 				isValid = false;
 				editingParam = false;
@@ -186,22 +185,23 @@ int main(int argc, char* argv[]) {
 		// invalid response message
 		if (!isValid) {
 			
-			std::cout << "\n\tInvalid input: " << inputText << std::endl;
+			std::cout << "\n\tPrevious input invalid: " << inputText << std::endl;
 		}
 		
 		// input prompt
 		std::cout << std::endl;
-		std::cout << "\t\tEnter new value, ";
-		if (currentParam == 4) {
-			
-			std::cout << "(f) to open selector, ";
-		}
-		std::cout << "or (" << currentParam << ") to return to main project page.\n\t\t\t-> ";
+		std::cout << "\t\tEnter new value, " <<
+					std::string(currentParam == 4
+									? "(f) to open selector, "
+									: "")
+					<< "or ("
+					<< currentParam
+					<< ") to return to main project page.\n\t\t\t-> ";
 		std::cin.clear();
 		std::cin >> inputText;
 		
 		// validate input
-		inputNum = int(inputText[0]) - int('0');
+		inputNum = int(inputText[0]) - int('0'); // has to be 0 and not EditParam::Build (to avoid triple-casting)
 		isValid = true;
 		editingParam = false;
 		
@@ -214,7 +214,7 @@ int main(int argc, char* argv[]) {
 		std::filesystem::path res;
 		switch (currentParam) {
 			
-			case 1: // name -> changes all folder names & resets executable
+			case EditParam::Name: // name -> changes all folder names & resets executable
 				if (find_if(inputText.begin(), inputText.end(), TextFormatter::isNotAlnumSpace) == inputText.end()) {
 					
 					// as long as it is alphanumeric, allow it
@@ -230,7 +230,7 @@ int main(int argc, char* argv[]) {
 				}
 				break;
 				
-			case 2: // type -> changes all folder names & resets executable
+			case EditParam::Type: // type -> changes all folder names & resets executable
 				if (t != PType::None) {
 					p.type = t;
 					
@@ -240,11 +240,11 @@ int main(int argc, char* argv[]) {
 				}
 				else {
 					
-					inputText = "'" + inputText + "' is not one of the four types";
+					inputText = "'" + inputText + "' is not one of the six types";
 				}
 				break;
 				
-			case 3: // executable name
+			case EditParam::ExeName: // executable name
 				if (find_if(inputText.begin(), inputText.end(), TextFormatter::isNotAlnumSpace) == inputText.end()) {
 					
 					// as long as it is alphanumeric, allow it
@@ -258,7 +258,7 @@ int main(int argc, char* argv[]) {
 				}
 				break;
 				
-			case 4: // directory
+			case EditParam::Directory: // directory
 				res = inputText;
 				if (inputText[0] == 'f') {
 					
@@ -289,7 +289,7 @@ int main(int argc, char* argv[]) {
 				
 				break;
 			
-			case 5: // project folder
+			case EditParam::ProjectFolder: // project folder (5)
 				if (find_if(inputText.begin(), inputText.end(), TextFormatter::isNotAlnumSpace) == inputText.end()) {
 					
 					// alphanumeric only
@@ -302,7 +302,7 @@ int main(int argc, char* argv[]) {
 				}
 				break;
 				
-			case 6: // app folder
+			case EditParam::AppFolder: // app folder
 				if (find_if(inputText.begin(), inputText.end(), TextFormatter::isNotAlnumSpace) == inputText.end()) {
 					
 					// alphanumeric only
@@ -315,7 +315,7 @@ int main(int argc, char* argv[]) {
 				}
 				break;
 				
-			case 7: // lib folder
+			case EditParam::LibFolder: // lib folder
 				if (find_if(inputText.begin(), inputText.end(), TextFormatter::isNotAlnumSpace) == inputText.end())
 				{
 
@@ -342,7 +342,7 @@ int main(int argc, char* argv[]) {
 	
 	// start with project folder
 	std::filesystem::path projectDir = p.directory / p.projectFolder;
-	std::filesystem::path assetsDir = "/Users/mallardlicker/scripts/C++/SublimeProjects/SublimeGenerator/SublimeGenerator/assets";
+	std::filesystem::path assetsDir = "/Users/mallardlicker/scripts/C++/SublimeProjects/ProjectGenerator/ProjectGenerator/assets";
 	assetsDir = assetsDir / ProjectInfo::pTypeToStr(p.type, true);
 	CppUtils::File::createDirIfNotExists(projectDir);
 	

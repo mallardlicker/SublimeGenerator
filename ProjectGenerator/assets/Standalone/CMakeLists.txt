@@ -1,13 +1,13 @@
-# ProjectGenerator
+# pgName
 
 cmake_minimum_required(VERSION 3.22)
 
 # ==================================================================================================
-#	ProjectGenerator Project
+#	pgName Project
 # ==================================================================================================
 project(
-    ProjectGenerator
-    VERSION 0.1.0
+    pgName
+    VERSION 0.0.1
     DESCRIPTION "Description here."
     LANGUAGES CXX
 )
@@ -15,7 +15,6 @@ project(
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON) # generates compile_commands.json, which VSCode uses to determine resolved dependencies in-editor
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
@@ -24,5 +23,5 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 #	Add each folder to project and let their CMakeLists generate separate code
 # ==================================================================================================
 
-# Add ProjectGenerator executable directory
-add_subdirectory(ProjectGenerator)
+# add pgAppOrStlName executable directory
+add_subdirectory(pgAppOrStlName)
