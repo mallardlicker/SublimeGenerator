@@ -1,0 +1,13 @@
+prefix=@CMAKE_INSTALL_PREFIX@
+exec_prefix=${prefix}
+includedir=@CMAKE_INSTALL_FULL_INCLUDEDIR@
+libdir=@CMAKE_INSTALL_FULL_LIBDIR@
+
+Name: PGLIBNAME
+Description: Base engine and libraries for project.
+Version: @PGLIBNAME_VERSION@
+URL: n/a
+Requires.private: @PGLIBNAME_PKG_CONFIG_REQUIRES_PRIVATE@
+Libs: -L${libdir} -l@PGLIBNAME_LIB_NAME@@PGLIBNAME_LIB_NAME_SUFFIX@
+Libs.private: @PGLIBNAME_PKG_CONFIG_LIBS_PRIVATE@
+Cflags: -I${includedir}

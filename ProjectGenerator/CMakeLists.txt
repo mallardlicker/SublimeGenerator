@@ -121,10 +121,10 @@ install(TARGETS pg
 		EXCLUDE_FROM_ALL)
 		
 # Install to workspace directory (uses different prefix)
-install(TARGETS pg
-		RUNTIME DESTINATION .
-		COMPONENT pg_workspace
-		EXCLUDE_FROM_ALL)
+# install(TARGETS pg
+# 		RUNTIME DESTINATION .
+# 		COMPONENT pg_workspace
+# 		EXCLUDE_FROM_ALL)
 
 # Create a custom target to install only pg to system location
 add_custom_target(install_pg_system
@@ -133,7 +133,7 @@ add_custom_target(install_pg_system
     COMMENT "Installing pg executable to system bin")
 
 # Create a custom target to install pg to workspace directory
-add_custom_target(install_pg_workspace
-	COMMAND ${CMAKE_COMMAND} --install ${CMAKE_BINARY_DIR} --component pg_workspace --prefix ${CMAKE_SOURCE_DIR}
-	DEPENDS pg
-	COMMENT "Installing pg executable to workspace directory")
+# add_custom_target(install_pg_workspace
+# 	COMMAND ${CMAKE_COMMAND} --install ${CMAKE_BINARY_DIR} --component pg_workspace --prefix ${CMAKE_SOURCE_DIR}
+# 	DEPENDS pg
+# 	COMMENT "Installing pg executable to workspace directory")
